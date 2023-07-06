@@ -1,12 +1,12 @@
 import java.util.*;
 
 public class GDSEMarksManagementSystem {
-    private static final int MAX_STUDENTS = 100;
-    private static final int MODULE_COUNT = 2;
+    private static final int noOfStudents = 100;
+    private static final int noOfModules = 2;
 
-    private static String[] studentIds = new String[MAX_STUDENTS];
-    private static String[] studentNames = new String[MAX_STUDENTS];
-    private static int[][] marks = new int[MAX_STUDENTS][MODULE_COUNT];
+    private static String[] studentIds = new String[noOfStudents];
+    private static String[] studentNames = new String[noOfStudents];
+    private static int[][] marks = new int[noOfStudents][noOfModules];
     private static int studentCount = 0;
     private static Scanner input = new Scanner(System.in);
     private static final String BOLD = "\033[1m";
@@ -95,16 +95,80 @@ public class GDSEMarksManagementSystem {
         studentNames[studentCount] = studentName;
         studentCount++;
 
-        System.out.print("\nStudent has been added successfully.");
+        System.out.print("\nStudent has been added successfully. Do you want to add a new student? (Y/n) : ");
+        String choice = input.nextLine().trim().toLowerCase();
 
-        if (askForContinuation(" Do you want to add a new student? (Y/n) : ")) {
+        if (choice.equalsIgnoreCase("Y")) {
             addNewStudent();
-        }else {
+        }else if(choice.equalsIgnoreCase("n")){
             main(null);
+        }else {
+            System.out.println("Invalid option. Please try again.");
         }
     }
 
     private static void addNewStudentWithMarks() {
+        String studentId;
+        String studentName;
+        int[] studentMarks = new int[noOfModules];
+
+        System.out.println(BOLD +"-----------------------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"|\t\t\t     ADD NEW STUDENT WITH MARKS\t\t\t\t  |"+ RESET);
+        System.out.println(BOLD +"-----------------------------------------------------------------------------------"+ RESET);
+        System.out.println();
+
+        do {
+            System.out.print("Enter Student ID   : ");
+            studentId = input.nextLine().trim();
+
+            if (isStudentIdExists(studentId)) {
+                System.out.println("The Student ID already exists\n");
+            }
+        } while (isStudentIdExists(studentId));
+
+        System.out.print("Enter Student Name : ");
+        studentName = input.nextLine().trim();
+
+        System.out.println();
+
+        for (int i = 0; i < noOfModules; i++) {
+            String moduleName = getModuleName(i);
+            int moduleMarks;
+
+            do {
+                System.out.print(moduleName + " Marks    : ");
+                try {
+                    moduleMarks = Integer.parseInt(input.nextLine().trim());
+                    if (moduleMarks < 0 || moduleMarks > 100) {
+                        System.out.println("Invalid marks, please enter correct marks.");
+                        System.out.println();
+                        continue;
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid marks, please enter correct marks.");
+                    System.out.println();
+                }
+            } while (true);
+
+            studentMarks[i] = moduleMarks;
+        }
+
+        studentIds[studentCount] = studentId;
+        studentNames[studentCount] = studentName;
+        marks[studentCount] = studentMarks;
+        studentCount++;
+
+        System.out.print("\nStudent has been added successfully. Do you want to add a new student? (Y/n) : ");
+        String choice = input.nextLine().trim().toLowerCase();
+
+        if (choice.equalsIgnoreCase("Y")) {
+            addNewStudentWithMarks();
+        } else if(choice.equalsIgnoreCase("n")){
+            main(null);
+        }else {
+            System.out.println("Invalid option. Please try again.");
+        }
     }
 
     private static void addMarks() {
@@ -147,10 +211,9 @@ public class GDSEMarksManagementSystem {
         }
         return false;
     }
-    private static boolean askForContinuation(String message) {
-        System.out.print(message + " ");
-        String choice = input.nextLine().trim().toLowerCase();
-        return !choice.equals("n");
+
+    private static String getModuleName(int moduleIndex) {
+        return moduleIndex == 0 ? "Programming Fundamentals" : "Database Management Systems";
     }
 
     private static void clearConsole() {
