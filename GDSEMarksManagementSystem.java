@@ -1,15 +1,21 @@
 import java.util.*;
 
 public class GDSEMarksManagementSystem {
+    private static final int MAX_STUDENTS = 100;
+    private static final int MODULE_COUNT = 2;
+
+    private static String[] studentIds = new String[MAX_STUDENTS];
+    private static String[] studentNames = new String[MAX_STUDENTS];
+    private static int[][] marks = new int[MAX_STUDENTS][MODULE_COUNT];
+    private static int studentCount = 0;
     private static Scanner input = new Scanner(System.in);
     private static final String BOLD = "\033[1m";
     private static final String RESET = "\033[0m";
 
     public static void main(String[] args) {
-        int choice = -1;
-        while (choice != 0) {
+            clearConsole();
             displayHomePage();
-            choice = getChoice();
+            int choice = getChoice();
             clearConsole();
 
             switch (choice) {
@@ -43,38 +49,59 @@ public class GDSEMarksManagementSystem {
                 case 10:
                     bestInDatabaseManagementSystem();
                     break;
-                case 0:
-                    System.out.println();
-                    System.out.println("Exiting the program...");
-                    System.out.println();
-                    break;
                 default:
                     System.out.println();
                     System.out.println("Invalid option. Please try again.");
                     System.out.println();
             }
         }
-    }
 
     private static void displayHomePage() {
-        System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
-        System.out.println( BOLD + "|\t\t\t\t\t\tWELCOME TO GDSE MARKS MANAGEMENT SYSTEM\t\t\t\t\t\t|"+ RESET);
-        System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"---------------------------------------------------------------------------------"+ RESET);
+        System.out.println( BOLD + "|\t\t   WELCOME TO GDSE MARKS MANAGEMENT SYSTEM\t\t\t|"+ RESET);
+        System.out.println(BOLD +"---------------------------------------------------------------------------------"+ RESET);
         System.out.println();
-        System.out.println("[1]\tAdd New Student\t\t\t\t\t\t[2] Add New Student With Marks");
-        System.out.println("[3]\tAdd Marks\t\t\t\t\t\t\t[4] Update Student Details");
-        System.out.println("[5]\tUpdate Marks\t\t\t\t\t\t[6] Delete Student");
-        System.out.println("[7]\tPrint Student Details\t\t\t\t[8] Print Student Ranks");
-        System.out.println("[9]\tBest in Programming Fundamentals\t[10] Best in Database Management System");
+        System.out.println("[1] Add New Student\t\t\t[2] Add New Student With Marks");
+        System.out.println("[3] Add Marks\t\t\t\t[4] Update Student Details");
+        System.out.println("[5] Update Marks\t\t\t[6] Delete Student");
+        System.out.println("[7] Print Student Details\t\t[8] Print Student Ranks");
+        System.out.println("[9] Best in Programming Fundamentals\t[10] Best in Database Management System");
         System.out.println();
         System.out.print(BOLD+"Enter an option to continue > "+RESET);
     }
 
 
     private static void addNewStudent() {
+        clearConsole();
         System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
-        System.out.println(BOLD +"|\t\t\t\t\t\t\t\tADD NEW STUDENT\t\t\t\t\t\t\t\t|"+ RESET);
+        System.out.println(BOLD +"|\t\t\t\t   ADD NEW STUDENT\t\t\t\t    |"+ RESET);
         System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
+        System.out.println();
+        String studentId;
+        String studentName;
+        do {
+            System.out.print("Enter Student ID   : ");
+            studentId = input.nextLine().trim();
+
+            if (isStudentIdExists(studentId)) {
+                System.out.println("The Student ID already exists\n");
+            }
+        } while (isStudentIdExists(studentId));
+
+        System.out.print("Enter Student Name : ");
+        studentName = input.nextLine().trim();
+
+        studentIds[studentCount] = studentId;
+        studentNames[studentCount] = studentName;
+        studentCount++;
+
+        System.out.print("\nStudent has been added successfully.");
+
+        if (askForContinuation(" Do you want to add a new student? (Y/n) : ")) {
+            addNewStudent();
+        }else {
+            main(null);
+        }
     }
 
     private static void addNewStudentWithMarks() {
@@ -111,6 +138,21 @@ public class GDSEMarksManagementSystem {
             return -1;
         }
     }
+
+    private static boolean isStudentIdExists(String studentId) {
+        for (int i = 0; i < studentCount; i++) {
+            if (studentIds[i].equals(studentId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private static boolean askForContinuation(String message) {
+        System.out.print(message + " ");
+        String choice = input.nextLine().trim().toLowerCase();
+        return !choice.equals("n");
+    }
+
     private static void clearConsole() {
         try {
             final String os = System.getProperty("os.name");
@@ -124,5 +166,4 @@ public class GDSEMarksManagementSystem {
             e.printStackTrace();
         }
     }
-
 }
