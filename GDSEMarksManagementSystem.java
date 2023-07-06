@@ -8,6 +8,7 @@ public class GDSEMarksManagementSystem {
     private static String[] studentNames = new String[noOfStudents];
     private static int[][] marks = new int[noOfStudents][noOfModules];
     private static int studentCount = 0;
+    private static final String[] moduleNames = {"Programming Fundamentals", "Database Management Systems"};
     private static Scanner input = new Scanner(System.in);
     private static final String BOLD = "\033[1m";
     private static final String RESET = "\033[0m";
@@ -70,7 +71,6 @@ public class GDSEMarksManagementSystem {
         System.out.print(BOLD+"Enter an option to continue > "+RESET);
     }
 
-
     private static void addNewStudent() {
         clearConsole();
         System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
@@ -108,6 +108,7 @@ public class GDSEMarksManagementSystem {
     }
 
     private static void addNewStudentWithMarks() {
+        clearConsole();
         String studentId;
         String studentName;
         int[] studentMarks = new int[noOfModules];
@@ -132,25 +133,7 @@ public class GDSEMarksManagementSystem {
         System.out.println();
 
         for (int i = 0; i < noOfModules; i++) {
-            String moduleName = getModuleName(i);
-            int moduleMarks;
-
-            do {
-                System.out.print(moduleName + " Marks    : ");
-                try {
-                    moduleMarks = Integer.parseInt(input.nextLine().trim());
-                    if (moduleMarks < 0 || moduleMarks > 100) {
-                        System.out.println("Invalid marks, please enter correct marks.");
-                        System.out.println();
-                        continue;
-                    }
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid marks, please enter correct marks.");
-                    System.out.println();
-                }
-            } while (true);
-
+            int moduleMarks = getValidMarks(moduleNames[i]);
             studentMarks[i] = moduleMarks;
         }
 
@@ -166,12 +149,76 @@ public class GDSEMarksManagementSystem {
             addNewStudentWithMarks();
         } else if(choice.equalsIgnoreCase("n")){
             main(null);
-        }else {
+        } else {
             System.out.println("Invalid option. Please try again.");
         }
     }
 
     private static void addMarks() {
+        clearConsole();
+        String studentId;
+        int studentIndex;
+        String choice = "";
+
+        System.out.println(BOLD +"------------------------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"|\t\t\t\t      ADD MARKS\t\t\t\t\t   |"+ RESET);
+        System.out.println(BOLD +"------------------------------------------------------------------------------------"+ RESET);
+        System.out.println();
+
+        do {
+            System.out.print("Enter Student ID : ");
+            studentId = input.nextLine().trim();
+            studentIndex = findStudentIndexById(studentId);
+
+            if (studentIndex == -1) {
+                System.out.print("Invalid Student ID. Do you want to search again? (Y/n) : ");
+                choice = input.nextLine().trim().toLowerCase();
+                System.out.println();
+                if (choice.equalsIgnoreCase("n")) {
+                    main(null);
+                }
+            }
+        } while (studentIndex == -1 && choice.equalsIgnoreCase("Y"));
+
+        if (studentIndex != -1) {
+            String studentName = studentNames[studentIndex];
+            System.out.println("Student Name   : " + studentName);
+
+            if (marks[studentIndex][0] != 0 || marks[studentIndex][1] != 0) {
+                System.out.println("This student's marks have been already added.");
+                System.out.println("If you want to update the marks, please use [4] Update Marks option\n");
+                System.out.print("\nDo you want to add marks for another student? (Y/n) : ");
+                choice = input.nextLine().trim().toLowerCase();
+
+                if (choice.equalsIgnoreCase("Y")) {
+                    addMarks();
+                } else if (choice.equalsIgnoreCase("n")) {
+                    main(null);
+                } else {
+                    System.out.println("Invalid option. Please try again.");
+                }
+            } else {
+                int[] studentMarks = new int[noOfModules];
+                System.out.println();
+                for (int i = 0; i < noOfModules; i++) {
+                    int moduleMarks = getValidMarks(moduleNames[i]);
+                    studentMarks[i] = moduleMarks;
+                }
+
+                marks[studentIndex] = studentMarks;
+
+                System.out.print("\nMarks have been added. Do you want to add marks for another student? (Y/n) : ");
+                choice = input.nextLine().trim().toLowerCase();
+
+                if (choice.equalsIgnoreCase("Y")) {
+                    addMarks();
+                } else if (choice.equalsIgnoreCase("n")) {
+                    main(null);
+                } else {
+                    System.out.println("Invalid option. Please try again.");
+                }
+            }
+        }
     }
 
     private static void updateStudentDetails() {
@@ -212,8 +259,32 @@ public class GDSEMarksManagementSystem {
         return false;
     }
 
-    private static String getModuleName(int moduleIndex) {
-        return moduleIndex == 0 ? "Programming Fundamentals" : "Database Management Systems";
+    private static int getValidMarks(String moduleName) {
+        while (true) {
+            System.out.print(moduleName + " Marks    : ");
+            try {
+                int moduleMarks = Integer.parseInt(input.nextLine().trim());
+                if (moduleMarks < 0 || moduleMarks > 100) {
+                    System.out.println("Invalid marks, please enter correct marks.");
+                    System.out.println();
+                    continue;
+                }
+                return moduleMarks;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid marks, please enter correct marks.");
+                System.out.println();
+            }
+        }
+    }
+
+
+    private static int findStudentIndexById(String studentId) {
+        for (int i = 0; i < studentCount; i++) {
+            if (studentIds[i].equals(studentId)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private static void clearConsole() {
