@@ -2,12 +2,15 @@ import java.util.*;
 
 public class GDSEMarksManagementSystem {
     private static Scanner input = new Scanner(System.in);
+    private static final String BOLD = "\033[1m";
+    private static final String RESET = "\033[0m";
+
     public static void main(String[] args) {
         int choice = -1;
         while (choice != 0) {
-            clearConsole();
             displayHomePage();
             choice = getChoice();
+            clearConsole();
 
             switch (choice) {
                 case 1:
@@ -54,20 +57,24 @@ public class GDSEMarksManagementSystem {
     }
 
     private static void displayHomePage() {
-        System.out.println("-------------------------------------------------------------------------------------");
-        System.out.println("|"+"\t\t\t\t\t\t"+"WELCOME TO GDSE MARKS MANAGEMENT SYSTEM"+"\t\t\t\t\t\t"+"|");
-        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
+        System.out.println( BOLD + "|\t\t\t\t\t\tWELCOME TO GDSE MARKS MANAGEMENT SYSTEM\t\t\t\t\t\t|"+ RESET);
+        System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
         System.out.println();
-        System.out.println("[1] Add New Student                        [2]  Add New Student With Marks");
-        System.out.println("[3] Add Marks                              [4]  Update Student Details");
-        System.out.println("[5] Update Marks                           [6]  Delete Student");
-        System.out.println("[7] Print Student Details                  [8]  Print Student Ranks");
-        System.out.println("[9] Best in Programming Fundamentals       [10] Best in Database Management System");
+        System.out.println("[1]\tAdd New Student\t\t\t\t\t\t[2] Add New Student With Marks");
+        System.out.println("[3]\tAdd Marks\t\t\t\t\t\t\t[4] Update Student Details");
+        System.out.println("[5]\tUpdate Marks\t\t\t\t\t\t[6] Delete Student");
+        System.out.println("[7]\tPrint Student Details\t\t\t\t[8] Print Student Ranks");
+        System.out.println("[9]\tBest in Programming Fundamentals\t[10] Best in Database Management System");
         System.out.println();
-        System.out.print("Enter an option to continue > ");
+        System.out.print(BOLD+"Enter an option to continue > "+RESET);
     }
 
+
     private static void addNewStudent() {
+        System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"|\t\t\t\t\t\t\t\tADD NEW STUDENT\t\t\t\t\t\t\t\t|"+ RESET);
+        System.out.println(BOLD +"-------------------------------------------------------------------------------------"+ RESET);
     }
 
     private static void addNewStudentWithMarks() {
