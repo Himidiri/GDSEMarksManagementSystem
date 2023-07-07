@@ -228,7 +228,7 @@ public class GDSEMarksManagementSystem {
         String choice = "";
 
         System.out.println(BOLD +"-----------------------------------------------------------------------------------"+ RESET);
-        System.out.println(BOLD +"|\t\t\t     UPDATE STUDENT DETAILS\t\t\t\t  |"+ RESET);
+        System.out.println(BOLD +"|\t\t\t     UPDATE STUDENT DETAILS\t\t\t\t|"+ RESET);
         System.out.println(BOLD +"-----------------------------------------------------------------------------------"+ RESET);
         System.out.println();
 
@@ -272,6 +272,65 @@ public class GDSEMarksManagementSystem {
     }
 
     private static void updateMarks() {
+        clearConsole();
+        String studentId;
+        int studentIndex;
+        String choice = "";
+
+        System.out.println(BOLD + "--------------------------------------------------------------------------------------" + RESET);
+        System.out.println(BOLD + "|\t\t\t\t     UPDATE MARKS\t\t\t\t     |" + RESET);
+        System.out.println(BOLD + "--------------------------------------------------------------------------------------" + RESET);
+        System.out.println();
+
+        do {
+            System.out.print("Enter Student ID   : ");
+            studentId = input.nextLine().trim();
+            studentIndex = findStudentIndexById(studentId);
+
+            if (studentIndex == -1) {
+                System.out.print("Invalid Student ID. Do you want to search again? (Y/n) : ");
+                choice = input.nextLine().trim().toLowerCase();
+                System.out.println();
+
+                if (choice.equalsIgnoreCase("n")) {
+                    main(null);
+                }
+            }
+        } while (studentIndex == -1 && choice.equalsIgnoreCase("Y"));
+
+        if (studentIndex != -1) {
+            String studentName = studentNames[studentIndex];
+            System.out.println("Student Name : " + studentName);
+            System.out.println();
+
+            if (marks[studentIndex][0] != 0 || marks[studentIndex][1] != 0) {
+                System.out.println("Programming Fundamentals Marks    : " + marks[studentIndex][0]);
+                System.out.println("Database Management Systems Marks : " + marks[studentIndex][1]);
+                System.out.println();
+
+                int[] studentMarks = new int[noOfModules];
+                System.out.println();
+                for (int i = 0; i < noOfModules; i++) {
+                    int moduleMarks = getValidMarks("Enter new " + moduleNames[i] + " Marks");
+                    studentMarks[i] = moduleMarks;
+                    marks[studentIndex] = studentMarks;
+                }
+                System.out.println("Marks have been updated successfully.");
+            } else {
+                System.out.println("This student's marks yet to be added.");
+            }
+
+            System.out.print("Do you want to update marks for another student? (Y/n) : ");
+            choice = input.nextLine().trim().toLowerCase();
+
+            if (choice.equalsIgnoreCase("Y")) {
+                updateMarks();
+            } else if (choice.equalsIgnoreCase("n")) {
+                main(null);
+            } else {
+                System.out.println("Invalid option. Please try again.");
+            }
+        }
     }
 
     private static void deleteStudent() {
