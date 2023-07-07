@@ -186,7 +186,7 @@ public class GDSEMarksManagementSystem {
 
             if (marks[studentIndex][0] != 0 || marks[studentIndex][1] != 0) {
                 System.out.println("This student's marks have been already added.");
-                System.out.println("If you want to update the marks, please use [4] Update Marks option\n");
+                System.out.println("If you want to update the marks, please use [5] Update Marks option\n");
                 System.out.print("\nDo you want to add marks for another student? (Y/n) : ");
                 choice = input.nextLine().trim().toLowerCase();
 
@@ -222,6 +222,53 @@ public class GDSEMarksManagementSystem {
     }
 
     private static void updateStudentDetails() {
+        clearConsole();
+        String studentId;
+        int studentIndex;
+        String choice = "";
+
+        System.out.println(BOLD +"-----------------------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"|\t\t\t     UPDATE STUDENT DETAILS\t\t\t\t  |"+ RESET);
+        System.out.println(BOLD +"-----------------------------------------------------------------------------------"+ RESET);
+        System.out.println();
+
+        do {
+            System.out.print("Enter Student ID   : ");
+            studentId = input.nextLine().trim();
+            studentIndex = findStudentIndexById(studentId);
+
+            if (studentIndex == -1) {
+                System.out.print("Invalid Student ID. Do you want to search again? (Y/n) : ");
+                choice = input.nextLine().trim().toLowerCase();
+                System.out.println();
+                if (choice.equalsIgnoreCase("n")) {
+                    main(null);
+                }
+            }
+        } while (studentIndex == -1 && choice.equalsIgnoreCase("Y"));
+
+        if (studentIndex != -1) {
+            String studentName = studentNames[studentIndex];
+            System.out.println("Student Name : " + studentName);
+
+            System.out.println();
+            System.out.print("Enter the new student name: ");
+            String newStudentName = input.nextLine().trim();
+
+            studentNames[studentIndex] = newStudentName;
+
+            System.out.println("\nStudent details have been updated successfully.");
+            System.out.print("Do you want to update another student's details? (Y/n) : ");
+            choice = input.nextLine().trim().toLowerCase();
+
+            if (choice.equalsIgnoreCase("Y")) {
+                updateStudentDetails();
+            } else if (choice.equalsIgnoreCase("n")) {
+                main(null);
+            } else {
+                System.out.println("Invalid option. Please try again.");
+            }
+        }
     }
 
     private static void updateMarks() {
