@@ -385,6 +385,64 @@ public class GDSEMarksManagementSystem {
     }
 
     private static void printStudentDetails() {
+        clearConsole();
+        String studentId;
+        int studentIndex;
+        String choice = "";
+
+        System.out.println(BOLD +"---------------------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"|\t\t\t     PRINT STUDENT DETAILS \t\t\t\t|"+ RESET);
+        System.out.println(BOLD +"---------------------------------------------------------------------------------"+ RESET);
+        System.out.println();
+
+        do {
+            System.out.print("Enter Student ID   : ");
+            studentId = input.nextLine().trim();
+            studentIndex = findStudentIndexById(studentId);
+
+            if (studentIndex == -1) {
+                System.out.print("Invalid Student ID. Do you want to search again? (Y/n) : ");
+                choice = input.nextLine().trim().toLowerCase();
+                System.out.println();
+
+                if (choice.equalsIgnoreCase("n")) {
+                    main(null);
+                }
+            }
+        } while (studentIndex == -1 && choice.equalsIgnoreCase("Y"));
+
+        if (studentIndex != -1) {
+            String studentName = studentNames[studentIndex];
+            System.out.println("Student Name : " + studentName);
+
+            if (marks[studentIndex][0] == 0 && marks[studentIndex][1] == 0) {
+                System.out.println();
+                System.out.println("Marks yet to be added\n");
+            } else {
+                System.out.println("+-----------------------------------+---------------+");
+                System.out.printf("|%-35s|%15s|%n", "Programming Fundamentals Marks", marks[studentIndex][0]);
+                System.out.printf("|%-35s|%15s|%n", "Database Management Systems Marks", marks[studentIndex][1]);
+                int totalMarks = marks[studentIndex][0] + marks[studentIndex][1];
+                double averageMarks = (double) totalMarks / noOfModules;
+                int rank = findRank(studentIndex);
+                String rankPosition = getRankPosition(rank);
+                System.out.printf("|%-35s|%15s|%n", "Total Marks", totalMarks);
+                System.out.printf("|%-35s|%15.2f|%n", "Avg. Marks", averageMarks);
+                System.out.printf("|%-35s|%15s|%n", "Rank", rank + " (" + rankPosition + ")");
+                System.out.println("+-----------------------------------+---------------+\n");
+            }
+
+            System.out.print("Do you want to search another student details? (Y/n) : ");
+            choice = input.nextLine().trim().toLowerCase();
+
+            if (choice.equalsIgnoreCase("Y")) {
+                printStudentDetails();
+            } else if (choice.equalsIgnoreCase("n")) {
+                main(null);
+            } else {
+                System.out.println("Invalid option. Please try again.");
+            }
+        }
     }
 
     private static void printStudentRanks() {
@@ -403,7 +461,6 @@ public class GDSEMarksManagementSystem {
             return -1;
         }
     }
-
     private static boolean isStudentIdExists(String studentId) {
         for (int i = 0; i < studentCount; i++) {
             if (studentIds[i].equals(studentId)) {
@@ -412,7 +469,6 @@ public class GDSEMarksManagementSystem {
         }
         return false;
     }
-
     private static int getValidMarks(String moduleName) {
         while (true) {
             System.out.print(moduleName + " Marks    : ");
@@ -430,8 +486,6 @@ public class GDSEMarksManagementSystem {
             }
         }
     }
-
-
     private static int findStudentIndexById(String studentId) {
         for (int i = 0; i < studentCount; i++) {
             if (studentIds[i].equals(studentId)) {
@@ -439,6 +493,40 @@ public class GDSEMarksManagementSystem {
             }
         }
         return -1;
+    }
+    private static int findRank(int studentIndex) {
+        int totalMarks = marks[studentIndex][0] + marks[studentIndex][1];
+        int rank = 1;
+
+        for (int i = 0; i < studentCount; i++) {
+            if (i != studentIndex) {
+                int otherTotalMarks = marks[i][0] + marks[i][1];
+                if (otherTotalMarks > totalMarks) {
+                    rank++;
+                }
+            }
+        }
+
+        return rank;
+    }
+
+    private static String getRankPosition(int rank) {
+        String rankPosition;
+        switch (rank) {
+            case 1:
+                rankPosition = "First";
+                break;
+            case 2:
+                rankPosition = "Second";
+                break;
+            case 3:
+                rankPosition = "Third";
+                break;
+            default:
+                rankPosition = rank + "th";
+                break;
+        }
+        return rankPosition;
     }
 
     private static void clearConsole() {
