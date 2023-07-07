@@ -446,8 +446,44 @@ public class GDSEMarksManagementSystem {
     }
 
     private static void printStudentRanks() {
-    }
+        clearConsole();
+        sortStudentsByTotalMarks();
 
+        System.out.println(BOLD +"--------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"|\t\t      PRINT STUDENT'S RANKS\t\t\t   |"+ RESET);
+        System.out.println(BOLD +"--------------------------------------------------------------------\n"+ RESET);
+
+        System.out.printf("+------+--------+--------------------+--------------+--------------+%n");
+        System.out.printf("| Rank | ID     | Name               | Total Marks  | Avg.Marks    |%n");
+        System.out.printf("+------+--------+--------------------+--------------+--------------+%n");
+
+        for (int rank = 1; rank <= studentCount; rank++) {
+            int index = rank - 1;
+            String studentId = studentIds[index];
+            String studentName = studentNames[index];
+            int totalMarks = marks[index][0] + marks[index][1];
+            double averageMarks = (double) totalMarks / noOfModules;
+
+            if (totalMarks > 0) {
+                System.out.printf("| %-4s | %-6s | %-18s | %12s | %12.2f |%n",
+                        rank, studentId, studentName, totalMarks, averageMarks);
+            }
+        }
+
+        System.out.printf("+------+--------+--------------------+--------------+--------------+%n");
+        System.out.println();
+
+        System.out.print("Do you want to go back to the main menu? (Y/n) : ");
+        String choice = input.nextLine().trim().toLowerCase();
+
+        if (choice.equalsIgnoreCase("Y")) {
+            main(null);
+        } else if (choice.equalsIgnoreCase("n")) {
+            printStudentRanks();
+        } else {
+            System.out.println("Invalid option. Please try again.");
+        }
+    }
     private static void bestInProgrammingFundamentals() {
     }
 
@@ -509,7 +545,6 @@ public class GDSEMarksManagementSystem {
 
         return rank;
     }
-
     private static String getRankPosition(int rank) {
         String rankPosition;
         switch (rank) {
@@ -527,6 +562,28 @@ public class GDSEMarksManagementSystem {
                 break;
         }
         return rankPosition;
+    }
+    private static void sortStudentsByTotalMarks() {
+        for (int i = 0; i < studentCount - 1; i++) {
+            for (int j = 0; j < studentCount - i - 1; j++) {
+                int totalMarks1 = marks[j][0] + marks[j][1];
+                int totalMarks2 = marks[j + 1][0] + marks[j + 1][1];
+
+                if (totalMarks1 < totalMarks2) {
+                    String tempId = studentIds[j];
+                    studentIds[j] = studentIds[j + 1];
+                    studentIds[j + 1] = tempId;
+
+                    String tempName = studentNames[j];
+                    studentNames[j] = studentNames[j + 1];
+                    studentNames[j + 1] = tempName;
+
+                    int[] tempMarks = marks[j];
+                    marks[j] = marks[j + 1];
+                    marks[j + 1] = tempMarks;
+                }
+            }
+        }
     }
 
     private static void clearConsole() {
