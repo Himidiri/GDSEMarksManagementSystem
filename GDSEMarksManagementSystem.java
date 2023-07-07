@@ -227,9 +227,9 @@ public class GDSEMarksManagementSystem {
         int studentIndex;
         String choice = "";
 
-        System.out.println(BOLD +"-----------------------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"---------------------------------------------------------------------------------"+ RESET);
         System.out.println(BOLD +"|\t\t\t     UPDATE STUDENT DETAILS\t\t\t\t|"+ RESET);
-        System.out.println(BOLD +"-----------------------------------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"---------------------------------------------------------------------------------"+ RESET);
         System.out.println();
 
         do {
@@ -334,6 +334,54 @@ public class GDSEMarksManagementSystem {
     }
 
     private static void deleteStudent() {
+        clearConsole();
+        String studentId;
+        int studentIndex;
+        String choice = "";
+
+        System.out.println(BOLD + "--------------------------------------------------------------------------------------" + RESET);
+        System.out.println(BOLD + "|\t\t\t\t     DELETE STUDENT\t\t\t\t     |" + RESET);
+        System.out.println(BOLD + "--------------------------------------------------------------------------------------" + RESET);
+        System.out.println();
+
+        do {
+            System.out.print("Enter Student ID   : ");
+            studentId = input.nextLine().trim();
+            studentIndex = findStudentIndexById(studentId);
+
+            if (studentIndex == -1) {
+                System.out.print("Invalid Student ID. Do you want to search again? (Y/n) : ");
+                choice = input.nextLine().trim().toLowerCase();
+                System.out.println();
+
+                if (choice.equalsIgnoreCase("n")) {
+                    main(null);
+                }
+            }
+        } while (studentIndex == -1 && choice.equalsIgnoreCase("Y"));
+
+        if (studentIndex != -1) {
+            System.out.println("Student has been deleted successfully.");
+
+            for (int i = studentIndex; i < studentCount - 1; i++) {
+                studentIds[i] = studentIds[i + 1];
+                studentNames[i] = studentNames[i + 1];
+                marks[i] = marks[i + 1];
+            }
+
+            studentCount--;
+
+            System.out.print("Do you want to delete another student? (Y/n) : ");
+            choice = input.nextLine().trim().toLowerCase();
+
+            if (choice.equalsIgnoreCase("Y")) {
+                deleteStudent();
+            } else if (choice.equalsIgnoreCase("n")) {
+                main(null);
+            } else {
+                System.out.println("Invalid option. Please try again.");
+            }
+        }
     }
 
     private static void printStudentDetails() {
