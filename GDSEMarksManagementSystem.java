@@ -484,6 +484,7 @@ public class GDSEMarksManagementSystem {
             System.out.println("Invalid option. Please try again.");
         }
     }
+
     private static void bestInProgrammingFundamentals() {
         clearConsole();
 
@@ -548,6 +549,66 @@ public class GDSEMarksManagementSystem {
     }
 
     private static void bestInDatabaseManagementSystem() {
+        clearConsole();
+
+        System.out.println(BOLD +"----------------------------------------------------------"+ RESET);
+        System.out.println(BOLD +"|\t   BEST IN DATABASE MANAGEMENT SYSTEM\t\t |"+ RESET);
+        System.out.println(BOLD +"----------------------------------------------------------"+ RESET);
+        System.out.println();
+
+        int[] sortedIndices = new int[studentCount];
+        for (int i = 0; i < studentCount; i++) {
+            sortedIndices[i] = i;
+        }
+
+        for (int i = 0; i < studentCount - 1; i++) {
+            for (int j = 0; j < studentCount - i - 1; j++) {
+                int studentIndex1 = sortedIndices[j];
+                int studentIndex2 = sortedIndices[j + 1];
+                int marks1 = marks[studentIndex1][1];
+                int marks2 = marks[studentIndex2][1];
+
+                if (marks1 < marks2) {
+                    int temp = sortedIndices[j];
+                    sortedIndices[j] = sortedIndices[j + 1];
+                    sortedIndices[j + 1] = temp;
+                }
+            }
+        }
+
+        boolean studentsFound = false;
+        System.out.println("+--------+-----------------+----------------+------------+");
+        System.out.println("| ID     | Name            | DBMS Marks     | PF Marks   |");
+        System.out.println("+--------+-----------------+----------------+------------+");
+        for (int studentIndex : sortedIndices) {
+            int dbmsMarks = marks[studentIndex][1];
+            if (dbmsMarks > 0) {
+                String studentId = studentIds[studentIndex];
+                String studentName = studentNames[studentIndex];
+                int pfMarks = marks[studentIndex][0];
+
+                System.out.printf("| %-6s | %-15s | %-14d | %-10d |%n", studentId, studentName, dbmsMarks, pfMarks);
+                studentsFound = true;
+            }
+        }
+        System.out.println("+--------+-----------------+----------------+------------+");
+
+        if (!studentsFound) {
+            System.out.println();
+            System.out.println("No students found!");
+        }
+
+        System.out.println();
+        System.out.print("Do you want to go back to the main menu? (Y/n) : ");
+        String choice = input.nextLine().trim().toLowerCase();
+
+        if (choice.equalsIgnoreCase("Y")) {
+            main(null);
+        } else if (choice.equalsIgnoreCase("n")) {
+            bestInDatabaseManagementSystem();
+        } else {
+            System.out.println("Invalid option. Please try again.");
+        }
     }
 
     private static int getChoice() {
@@ -645,7 +706,6 @@ public class GDSEMarksManagementSystem {
             }
         }
     }
-
     private static void clearConsole() {
         try {
             final String os = System.getProperty("os.name");
